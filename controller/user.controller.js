@@ -25,6 +25,7 @@ const login = async (req, res) => {
 
       // return errorResponse(req, res, 'Invalid credentials!', 404);
     } else {
+
       // jwt token created
       let accessToken = userData.getToken({
         exp: 60 * 60,

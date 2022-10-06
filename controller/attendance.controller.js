@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const user = require("../models/user");
 const attendance = require('../models/attendance');
 const { successResponse, errorResponse } = require("../utils");
+const {Types} = require('mongoose')
 
 let subject = "cn";
 
@@ -9,7 +10,20 @@ const oswPageView = async (req, res) => {
     try{
 		let userId = req.user._id;
 		subject = "osw";
-		const data = await attendance.findOne({ userId: userId, subject: subject });
+    const data = await attendance.find({
+      userId: userId,
+      subject: subject,
+    });
+    if (Object.keys(data).length === 0) {
+      const newRecord = new attendance({
+        userId: userId,
+        subject: subject,
+        absent: [],
+        present: [],
+        holiday: [],
+      });
+      newRecord.save();
+    }
 		res.render("osw", { datas : data });
   }
   catch(error){
@@ -21,7 +35,20 @@ const dosPageView = async (req, res) => {
   try {
     let userId = req.user._id;
     subject = "dos";
-    const data = await attendance.findOne({ userId: userId, subject: subject });
+    const data = await attendance.find({
+      userId: userId,
+      subject: subject,
+    });
+    if (Object.keys(data).length === 0) {
+      const newRecord = new attendance({
+        userId: userId,
+        subject: subject,
+        absent: [],
+        present: [],
+        holiday: [],
+      });
+      newRecord.save();
+    }
     res.render("dos", { datas: data });
   } catch (error) {
     console.log(error.message);
@@ -32,7 +59,20 @@ const tocPageView = async (req, res) => {
   try {
     let userId = req.user._id;
     subject = "toc";
-    const data = await attendance.findOne({ userId: userId, subject: subject });
+    const data = await attendance.find({
+      userId: userId,
+      subject: subject,
+    });
+    if (Object.keys(data).length === 0) {
+      const newRecord = new attendance({
+        userId: userId,
+        subject: subject,
+        absent: [],
+        present: [],
+        holiday: [],
+      });
+      newRecord.save();
+    }
     res.render("toc", { datas: data });
   } catch (error) {
     console.log(error.message);
@@ -41,11 +81,23 @@ const tocPageView = async (req, res) => {
 
 const cnPageView = async (req, res) => {
   try{
-		let userId = req.user._id;
-		subject = "cn";
-		// const data = await attendance.findOne({ userId: userId, subject: subject });
-		// res.render("cn", { datas : data });
-		res.render("cn");
+    subject = "cn";
+    let userId = req.user._id;
+        const data = await attendance.find({
+          userId: Types.ObjectId(userId),
+          subject: subject,
+        });
+        if (Object.keys(data).length === 0) {
+          const newRecord = new attendance({
+            userId: userId,
+            subject: subject,
+            absent: [],
+            present: [],
+            holiday: [],
+          });
+          newRecord.save();
+        }
+      res.render("cn", { datas: data });
   }
   catch(error){
     console.log(error.message);
@@ -56,33 +108,48 @@ const ppPageView = async (req, res) => {
 	try {
 		subject = "pp";
 		let userId = req.user._id;
-		subject = "cn";
-		const data = await attendance.findOne({ userId: userId, subject: subject });
-		res.render("pp", { datas: info });
+        const data = await attendance.find({
+          userId: Types.ObjectId(userId),
+          subject: subject,
+        });
+        if (Object.keys(data).length === 0) {
+          const newRecord = new attendance({
+            userId: userId,
+            subject: subject,
+            absent: [],
+            present: [],
+            holiday: [],
+          });
+          newRecord.save();
+        }
+      res.render("pp", { datas: data });
   } catch (error) {
     console.log(error.message);
   }
 };
 
 const admPageView = async (req, res) => {
+try {
   subject = "adm";
   let userId = req.user._id;
-      const info = await attendance.findOne({
-        userId: userId,
-        subject: subject,
-      });
-
-      if (!info) {
-        const newRecord = new attendance({
-          userId: userId,
+        const data = await attendance.find({
+          userId: Types.ObjectId(userId),
           subject: subject,
-          absent: [],
-          present: [],
-          holiday: [],
         });
-        newRecord.save();
-      }
-  res.render("adm");
+        if (Object.keys(data).length === 0) {
+          const newRecord = new attendance({
+            userId: userId,
+            subject: subject,
+            absent: [],
+            present: [],
+            holiday: [],
+          });
+          newRecord.save();
+        }
+      res.render("adm", { datas: data });
+} catch (error){
+  console.log(error.message);
+}
 };
 
 const statusChange = async (req, res) => {
@@ -122,8 +189,11 @@ const statusChange = async (req, res) => {
       holiday: holiday,
     }
   );
-
-    res.render(subject);
+  const data = await attendance.find({
+    userId: userId,
+    subject: subject,
+  });
+    res.render(subject, { datas: data });
   } catch (error){
     console.log(error.message);
   }

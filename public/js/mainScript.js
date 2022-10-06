@@ -13,7 +13,7 @@ $(document).ready(function () {
     /*-------------------------------
              Calender script
     ---------------------------------*/
-    $(".true").each(function () {
+    $(".false").each(function () {
         var count = 0
         $(this).click(function () {
             count++;
